@@ -16,6 +16,11 @@ class Ingreso extends Component {
             pwc: "",
             redirect: false
         };
+
+        if(localStorage.getItem("token") !== null){
+            this.state.redirect = true;
+        }
+
         this.handleChangeUser = this.handleChangeUser.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRegister = this.handleRegister.bind(this);

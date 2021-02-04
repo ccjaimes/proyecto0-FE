@@ -10,7 +10,9 @@ class Eventos extends Component {
             redirect: false,
             tuplas: [],
             show: false,
-            form: {}
+            form: {},
+            categorias: ["CONFERENCIA", "SEMINARIO", "CONGRESO", "CURSO"],
+            formas: ["PRESENCIAL", "VIRTUAL"]
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.displayEvents();
@@ -100,6 +102,7 @@ class Eventos extends Component {
         .then(res => res.json())
         .then(response => {
             if(response.hasOwnProperty("msg")){
+                localStorage.removeItem("token");
                 this.setState({redirect:true});
                 return;
             }
@@ -159,8 +162,16 @@ class Eventos extends Component {
                             <Form.Control type="text" defaultValue={this.state.form.nombre}/>
                         </Form.Group>
                         <Form.Group controlId="cat">
-                            <Form.Label>Categoría (CONFERENCIA|SEMINARIO|CONGRESO|CURSO):</Form.Label>
-                            <Form.Control type="text" defaultValue={this.state.form.categoria}/>
+                            <Form.Label>Categoría:</Form.Label>
+                            <Form.Control as="select">
+                                { this.state.categorias.map( cate => {
+                                    if (cate === this.state.form.categoria){
+                                        return <option key={cate} selected> {cate}</option>
+                                    } else {
+                                        return <option key={cate}> {cate}</option>
+                                    }
+                                })}
+                            </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="lugar">
                             <Form.Label>Lugar:</Form.Label>
@@ -179,8 +190,16 @@ class Eventos extends Component {
                             <Form.Control type="text" defaultValue={this.state.form.fechaFin}/>
                         </Form.Group>
                         <Form.Group controlId="for">
-                            <Form.Label>Forma (PRESENCIAL|VIRTUAL):</Form.Label>
-                            <Form.Control type="text" defaultValue={this.state.form.forma}/>
+                            <Form.Label>Forma:</Form.Label>
+                            <Form.Control as="select">
+                                { this.state.formas.map( forma => {
+                                    if (forma === this.state.form.forma){
+                                        return <option key={forma} selected> {forma}</option>
+                                    } else {
+                                        return <option key={forma}> {forma}</option>
+                                    }
+                                })}
+                            </Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -190,6 +209,11 @@ class Eventos extends Component {
                 </Modal.Footer>
             </Modal>
         </>;
+    }
+
+    logoff = () => {
+        localStorage.removeItem("token");
+        this.setState({redirect: true});
     }
 
     render() {
@@ -220,7 +244,8 @@ class Eventos extends Component {
                         })}
                     </tbody>
                 </table>
-                <button type="button" onClick={this.handleShow} className="btn btn-primary">Crear evento</button>
+                <button type="button" onClick={this.handleShow} className="btn btn-primary mx-1">Crear evento</button>
+                <button type="button" onClick={this.logoff} className="btn btn-danger mx-1">Cerrar sesion</button>
             </div>
         );
     }
